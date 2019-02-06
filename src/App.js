@@ -5,6 +5,24 @@ import image from "./icons-sprite-with-name.png";
 import star from "./star.png";
 import TopUserInfo from "./topUserInfo";
 
+const Chevorn = styled.i`
+  ::before {
+    border-style: solid;
+    border-width: 0.25em 0.25em 0 0;
+    content: "";
+    display: inline-block;
+    height: 0.45em;
+    left: 0.15em;
+    position: relative;
+    top: 0.15em;
+    transform: rotate(-45deg);
+    vertical-align: top;
+    width: 0.45em;
+
+    left: ${props => (props.left ? "0.25em" : "0")};
+    transform: ${props => (props.left ? "rotate(-135deg)" : "rotate(45deg)")};
+  }
+`;
 const Body = styled.div`
   display: flex;
 `;
@@ -65,7 +83,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      data: [],
+      data: {},
       currentReview: 0,
       current: []
     };
@@ -95,14 +113,29 @@ class App extends Component {
     );
   }
   lastReview() {
-    console.log("Back!!1");
+    const { currentReview, data } = this.state;
+    if (currentReview === 0) {
+      this.setState(
+        {
+          current: data[-1]
+        },
+        this.setState({ currentReview: data.length })
+      );
+    } else {
+      this.setState(
+        {
+          current: data[currentReview - 1]
+        },
+        () => this.setState({ currentReview: currentReview - 1 })
+      );
+    }
   }
   render() {
     const { current } = this.state;
     return (
       <>
         <Wrapper>
-          {console.log(this.state)}
+          {/* {console.log(current.reviewer.firstName)} */}
           <TopUserInfo reviewer={current.reviewer} date={current.reviewDate} />
           <Container>
             <RatingBox>
@@ -117,9 +150,13 @@ class App extends Component {
               <ReviewSource />
             </RatingBox>
             <Body>
-              <button onClick={this.lastReview}>left</button>
+              <button onClick={this.lastReview}>
+                <Chevorn left />
+              </button>
               <Text>{current.comments}</Text>
-              <button onClick={this.nextReview}>Right</button>
+              <button onClick={this.nextReview}>
+                <Chevorn />
+              </button>
             </Body>
           </Container>
           {/* <img src={image} /> */}
