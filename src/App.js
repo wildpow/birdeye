@@ -4,6 +4,7 @@ import "styled-components/macro";
 import image from "./icons-sprite-with-name.png";
 import star from "./star.png";
 import TopUserInfo from "./topUserInfo";
+import StartRating from "./StartRating";
 
 const Chevorn = styled.i`
   ::before {
@@ -77,29 +78,41 @@ const Text = styled.p`
   font-size: 0.9rem;
   color: gray;
 `;
-
+const sourceName = ["Google", "Facebook", "BBB"];
+const source = ["-814px -661px", "-96px -734px", "-1px -514px"];
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: {},
+      data: [],
       currentReview: 0,
-      current: []
+      current: [],
+      source: ["-814px -661px", "-96px -734px", "-1px -514px"],
+      sourceName: ["Google", "Facebook", "BBB"],
+      backgroundPos: ""
     };
     this.nextReview = this.nextReview.bind(this);
     this.lastReview = this.lastReview.bind(this);
   }
-  componentDidMount() {
+  componentWillMount() {
     fetch(process.env.REACT_APP_SECRET_CODE, {
       headers: { Accept: "application/json" }
     })
       .then(response => response.json())
       .then(data =>
-        this.setState({
-          data,
-          current: data[this.state.currentReview]
-        })
+        this.setState(
+          {
+            data,
+            current: data[this.state.currentReview]
+          },
+          () =>
+            this.setState({
+              backgroundPos: this.state.source[
+                this.state.sourceName.indexOf(this.state.current.sourceType)
+              ]
+            })
+        )
       );
   }
 
@@ -109,7 +122,14 @@ class App extends Component {
       {
         current: data[currentReview + 1]
       },
-      () => this.setState({ currentReview: currentReview + 1 })
+      () =>
+        this.setState({ currentReview: currentReview + 1 }, () =>
+          this.setState({
+            backgroundPos: this.state.source[
+              this.state.sourceName.indexOf(this.state.current.sourceType)
+            ]
+          })
+        )
     );
   }
   lastReview() {
@@ -131,24 +151,29 @@ class App extends Component {
     }
   }
   render() {
-    const { current } = this.state;
+    const { current, currentReview } = this.state;
     return (
       <>
+        {/* {console.log(this.state.data)} */}
+        {/* {this.state.data.length > 0 &&
+          console.log(this.state.data[2].reviewer.lastName)}
+        {this.state.data[0] &&
+          console.log(this.state.data[2].reviewer.lastName)}
+        {console.log("undefined when render() first runs:")}
+        {console.log(this.state.data[0])}
+        {this.state.current.reviewer &&
+          console.log(this.state.data[2].reviewer.firstName)} */}
         <Wrapper>
-          {/* {console.log(current.reviewer.firstName)} */}
+          {/* {console.log(
+            current[currentReview] && current[currentReview].sourceType
+          )} */}
           <TopUserInfo reviewer={current.reviewer} date={current.reviewDate} />
           <Container>
-            <RatingBox>
-              <Rating>
-                <h5>5.0</h5>
-                <Star src={star} />
-                <Star src={star} />
-                <Star src={star} />
-                <Star src={star} />
-              </Rating>
-
-              <ReviewSource />
-            </RatingBox>
+            <StartRating
+              sourceType={current.sourceType}
+              backgroundPos={this.state.backgroundPos}
+              rating={current.rating}
+            />
             <Body>
               <button onClick={this.lastReview}>
                 <Chevorn left />
@@ -161,9 +186,6 @@ class App extends Component {
           </Container>
           {/* <img src={image} /> */}
         </Wrapper>
-        {/* <div dangerouslySetInnerHTML={this.createMarkup()} /> */}
-
-        {/* <div>{data[0].reviewId}</div> */}
       </>
     );
   }
