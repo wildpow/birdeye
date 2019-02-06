@@ -66,9 +66,11 @@ class App extends Component {
 
     this.state = {
       data: [],
-      currentReview: 2,
+      currentReview: 0,
       current: []
     };
+    this.nextReview = this.nextReview.bind(this);
+    this.lastReview = this.lastReview.bind(this);
   }
   componentDidMount() {
     fetch(process.env.REACT_APP_SECRET_CODE, {
@@ -83,12 +85,24 @@ class App extends Component {
       );
   }
 
+  nextReview() {
+    const { currentReview, data } = this.state;
+    this.setState(
+      {
+        current: data[currentReview + 1]
+      },
+      () => this.setState({ currentReview: currentReview + 1 })
+    );
+  }
+  lastReview() {
+    console.log("Back!!1");
+  }
   render() {
     const { current } = this.state;
     return (
       <>
         <Wrapper>
-          {console.log(current)}
+          {console.log(this.state)}
           <TopUserInfo reviewer={current.reviewer} date={current.reviewDate} />
           <Container>
             <RatingBox>
@@ -103,9 +117,9 @@ class App extends Component {
               <ReviewSource />
             </RatingBox>
             <Body>
-              <button onClick={() => console.log("left")}>left</button>
+              <button onClick={this.lastReview}>left</button>
               <Text>{current.comments}</Text>
-              <button onClick={() => console.log("right")}>Right</button>
+              <button onClick={this.nextReview}>Right</button>
             </Body>
           </Container>
           {/* <img src={image} /> */}
