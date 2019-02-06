@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import "styled-components/macro";
-import image from "./icons-sprite-with-name.png";
-import star from "./star.png";
+
 import TopUserInfo from "./topUserInfo";
 import StartRating from "./StartRating";
 
 const Chevorn = styled.i`
   ::before {
+    transition: all 0.25s ease-in;
+    ${props => props.newBc};
     border-style: solid;
     border-width: 0.25em 0.25em 0 0;
     content: "";
@@ -26,6 +27,14 @@ const Chevorn = styled.i`
 `;
 const Body = styled.div`
   display: flex;
+  /* padding-left: 16px; */
+  height: 150px;
+  button {
+    height: 150px;
+    border: none;
+    padding: 5px;
+    outline: none;
+  }
 `;
 const Wrapper = styled.div`
   max-width: 270px;
@@ -35,41 +44,7 @@ const Wrapper = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  padding-left: 16px;
-`;
-const Rating = styled.div`
-  display: flex;
-  color: gold;
-  font-size: 1.5rem;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: 900;
-  padding-top: 5px;
-  h5 {
-    padding-right: 20px;
-    margin: 0;
-    padding-left: 5px;
-  }
-`;
-
-const ReviewSource = styled.div`
-  background-image: url(${image});
-  background-position: -814px -661px;
-  vertical-align: middle;
-  transform: scale(0.7);
-  width: 44px;
-  height: 46px;
-  margin-top: -6px;
-`;
-const Star = styled.img`
-  width: 20px;
-  vertical-align: middle;
-  height: 20px;
-`;
-const RatingBox = styled.div`
-  display: flex;
-  padding: 0px;
-  margin: 0;
-  justify-content: space-between;
+  /* padding-left: 16px; */
 `;
 
 const Text = styled.p`
@@ -77,15 +52,19 @@ const Text = styled.p`
   margin-top: 5px;
   font-size: 0.9rem;
   color: gray;
+  height: 150px;
+  width: 350px;
+  overflow: hidden;
+  font-weight: 100;
 `;
-const sourceName = ["Google", "Facebook", "BBB"];
-const source = ["-814px -661px", "-96px -734px", "-1px -514px"];
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: [],
+      bc: "white",
       currentReview: 0,
       current: [],
       source: ["-814px -661px", "-96px -734px", "-1px -514px"],
@@ -117,7 +96,7 @@ class App extends Component {
   }
 
   nextReview() {
-    const { currentReview, data } = this.state;
+    const { currentReview, data, sourceName, current, source } = this.state;
     this.setState(
       {
         current: data[currentReview + 1]
@@ -125,13 +104,12 @@ class App extends Component {
       () =>
         this.setState({ currentReview: currentReview + 1 }, () =>
           this.setState({
-            backgroundPos: this.state.source[
-              this.state.sourceName.indexOf(this.state.current.sourceType)
-            ]
+            backgroundPos: source[sourceName.indexOf(current.sourceType)]
           })
         )
     );
   }
+
   lastReview() {
     const { currentReview, data } = this.state;
     if (currentReview === 0) {
@@ -151,22 +129,13 @@ class App extends Component {
     }
   }
   render() {
-    const { current, currentReview } = this.state;
+    const { current, bc } = this.state;
+    const newBc = css`
+      border-color: ${bc};
+    `;
     return (
       <>
-        {/* {console.log(this.state.data)} */}
-        {/* {this.state.data.length > 0 &&
-          console.log(this.state.data[2].reviewer.lastName)}
-        {this.state.data[0] &&
-          console.log(this.state.data[2].reviewer.lastName)}
-        {console.log("undefined when render() first runs:")}
-        {console.log(this.state.data[0])}
-        {this.state.current.reviewer &&
-          console.log(this.state.data[2].reviewer.firstName)} */}
         <Wrapper>
-          {/* {console.log(
-            current[currentReview] && current[currentReview].sourceType
-          )} */}
           <TopUserInfo reviewer={current.reviewer} date={current.reviewDate} />
           <Container>
             <StartRating
@@ -175,12 +144,20 @@ class App extends Component {
               rating={current.rating}
             />
             <Body>
-              <button onClick={this.lastReview}>
-                <Chevorn left />
+              <button
+                onClick={this.lastReview}
+                onMouseEnter={() => this.setState({ bc: "blue" })}
+                onMouseLeave={() => this.setState({ bc: "white" })}
+              >
+                <Chevorn left newBc={newBc} />
               </button>
               <Text>{current.comments}</Text>
-              <button onClick={this.nextReview}>
-                <Chevorn />
+              <button
+                onClick={this.nextReview}
+                onMouseEnter={() => this.setState({ bc: "blue" })}
+                onMouseLeave={() => this.setState({ bc: "white" })}
+              >
+                <Chevorn newBc={newBc} />
               </button>
             </Body>
           </Container>

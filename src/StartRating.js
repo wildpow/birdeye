@@ -37,6 +37,7 @@ const RatingBox = styled.div`
   display: flex;
   padding: 0px;
   margin: 0;
+  padding-left: 16px;
   justify-content: space-between;
 `;
 
