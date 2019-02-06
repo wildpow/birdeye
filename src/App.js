@@ -1,11 +1,73 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import "styled-components/macro";
+import image from "./icons-sprite-with-name.png";
+import star from "./star.png";
+import TopUserInfo from "./topUserInfo";
+
+const Body = styled.div`
+  display: flex;
+`;
+const Wrapper = styled.div`
+  max-width: 270px;
+  border: 2px solid #f8f8f8;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-left: 16px;
+`;
+const Rating = styled.div`
+  display: flex;
+  color: gold;
+  font-size: 1.5rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  padding-top: 5px;
+  h5 {
+    padding-right: 20px;
+    margin: 0;
+    padding-left: 5px;
+  }
+`;
+
+const ReviewSource = styled.div`
+  background-image: url(${image});
+  background-position: -814px -661px;
+  vertical-align: middle;
+  transform: scale(0.7);
+  width: 44px;
+  height: 46px;
+  margin-top: -6px;
+`;
+const Star = styled.img`
+  width: 20px;
+  vertical-align: middle;
+  height: 20px;
+`;
+const RatingBox = styled.div`
+  display: flex;
+  padding: 0px;
+  margin: 0;
+  justify-content: space-between;
+`;
+
+const Text = styled.p`
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: gray;
+`;
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: null
+      data: [],
+      currentReview: 2,
+      current: []
     };
   }
   componentDidMount() {
@@ -13,10 +75,46 @@ class App extends Component {
       headers: { Accept: "application/json" }
     })
       .then(response => response.json())
-      .then(data => this.setState({ data }));
+      .then(data =>
+        this.setState({
+          data,
+          current: data[this.state.currentReview]
+        })
+      );
   }
+
   render() {
-    return <div />;
+    const { current } = this.state;
+    return (
+      <>
+        <Wrapper>
+          {console.log(current)}
+          <TopUserInfo reviewer={current.reviewer} date={current.reviewDate} />
+          <Container>
+            <RatingBox>
+              <Rating>
+                <h5>5.0</h5>
+                <Star src={star} />
+                <Star src={star} />
+                <Star src={star} />
+                <Star src={star} />
+              </Rating>
+
+              <ReviewSource />
+            </RatingBox>
+            <Body>
+              <button onClick={() => console.log("left")}>left</button>
+              <Text>{current.comments}</Text>
+              <button onClick={() => console.log("right")}>Right</button>
+            </Body>
+          </Container>
+          {/* <img src={image} /> */}
+        </Wrapper>
+        {/* <div dangerouslySetInnerHTML={this.createMarkup()} /> */}
+
+        {/* <div>{data[0].reviewId}</div> */}
+      </>
+    );
   }
 }
 
