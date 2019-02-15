@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import styled, { css } from "styled-components";
 import "styled-components/macro";
+import star from "./star.png";
 
 import TopUserInfo from "./topUserInfo";
 import StartRating from "./StartRating";
+import Certified from "./badge.png";
 
 const Chevorn = styled.i`
   ::before {
@@ -58,6 +60,39 @@ const Text = styled.p`
   font-weight: 100;
 `;
 
+const CertReview = styled.div`
+  width: 145px;
+  height: 75px;
+  font-family: Arial, Helvetica, sans-serif;
+
+  background-color: blue;
+  display: flex;
+  color: white;
+  justify-content: space-between;
+  div {
+    padding: 7px 0 0 9px;
+    display: flex;
+    flex-direction: column;
+    img {
+      width: 20px;
+      height: 20px;
+    }
+    h4 {
+      margin: 0;
+      padding: 0;
+      font-size: 0.9rem;
+    }
+  }
+
+  img {
+    margin-top: -2px;
+    margin-right: 7px;
+    width: 45px;
+    justify-self: start;
+    height: 70px;
+    transform: scale(0.9);
+  }
+`;
 class App extends Component {
   constructor(props) {
     super(props);
@@ -129,12 +164,22 @@ class App extends Component {
     }
   }
   render() {
-    const { current, bc } = this.state;
+    const { current, bc, data } = this.state;
     const newBc = css`
       border-color: ${bc};
     `;
     return (
       <>
+        <CertReview>
+          <div>
+            <h4>{data.length}</h4>
+            <h4>Certified</h4>
+            <h4>Reviews</h4>
+            <img src={star} />
+          </div>
+          <img src={Certified} />
+        </CertReview>
+        {console.log(data)}
         <Wrapper>
           <TopUserInfo reviewer={current.reviewer} date={current.reviewDate} />
           <Container>
