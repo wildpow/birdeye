@@ -54,7 +54,6 @@ const StarRating = props => {
   `;
   return (
     <RatingBox>
-      {console.log(props)}
       <Rating>
         <h5>{numRating}</h5>
         {Array(props.rating).fill(<Star src={star} />)}
